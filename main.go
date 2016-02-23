@@ -10,8 +10,8 @@ import (
 )
 
 type Config struct {
-	Package string `json:package`
-	Output  string `json:output`
+	Package string `json:"package"`
+	Output  string `json:"output"`
 }
 
 var (
