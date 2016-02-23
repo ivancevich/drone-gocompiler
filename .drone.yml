@@ -1,0 +1,27 @@
+build:
+  image: golang:1.6
+  environment:
+    - CGO_ENABLED=0
+  commands:
+    - make deps
+    - make vet
+    - make build
+    - make test
+
+publish:
+  docker:
+    username: $$DOCKER_USER
+    password: $$DOCKER_PASS
+    email: $$DOCKER_EMAIL
+    repo: ivancevich/drone-gocompiler
+    tag: latest
+    when:
+      branch: master
+
+plugin:
+  name: Gocompiler
+  desc: Compile Golang programs
+  type: publish
+  image: ivancevich/drone-gocompiler
+  labels:
+    - golang

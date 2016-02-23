@@ -1,0 +1,5 @@
+[people]
+  [people.ivancevich]
+    name = "JC Ivancevich"
+    email = "jc.ivancevich@gmail.com"
+    login = "ivancevich"
