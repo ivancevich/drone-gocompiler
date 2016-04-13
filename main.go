@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/drone/drone-plugin-go/plugin"
 	"os"
@@ -35,7 +36,23 @@ func main() {
 	path := filepath.Join(workspace.Path, vargs.Package)
 	output := filepath.Join(workspace.Path, vargs.Output, vargs.Package)
 
-	cmd := exec.Command("godep", "go", "build", "-o", output)
+	var cmd *exec.Cmd
+	var out bytes.Buffer
+	var err error
+
+	cmd = exec.Command("go", "version")
+	cmd.Stdout = &out
+	cmd.Stderr = os.Stderr
+	trace(cmd)
+	err = cmd.Run()
+	if err != nil {
+		fmt.Println("Error: ", err.Error())
+		os.Exit(1)
+	}
+
+	fmt.Printf("Building with %s\n", out.String())
+
+	cmd = exec.Command("godep", "go", "build", "-o", output)
 	cmd.Env = append(cmd.Env, "PATH=/usr/local/go/bin:$PATH")
 	cmd.Env = append(cmd.Env, "GOPATH=/drone")
 	cmd.Env = append(cmd.Env, "CGO_ENABLED=0")
@@ -45,9 +62,9 @@ func main() {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	trace(cmd)
-	err := cmd.Run()
+	err = cmd.Run()
 	if err != nil {
-		fmt.Println("Error: ", err)
+		fmt.Println("Error: ", err.Error())
 		os.Exit(1)
 	}
 }
