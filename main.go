@@ -30,10 +30,6 @@ func main() {
 	plugin.Param("vargs", &vargs)
 	plugin.MustParse()
 
-	if len(vargs.Output) == 0 {
-		vargs.Output = "."
-	}
-
 	path := filepath.Join(workspace.Path, vargs.Package)
 	output := filepath.Join(workspace.Path, vargs.Output, vargs.Package)
 
@@ -54,7 +50,11 @@ func main() {
 	fmt.Printf("Building with %s\n", out.String())
 
 	command := "go"
-	args := []string{"build", "-o", output}
+	args := []string{"build"}
+
+	if len(vargs.Output) != 0 {
+		args = append(args, []string{"-o", output}...)
+	}
 
 	if vargs.Godep {
 		args = append([]string{command}, args...)
