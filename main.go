@@ -13,6 +13,7 @@ import (
 type Config struct {
 	Package string `json:"package"`
 	Output  string `json:"output"`
+	Godep   bool   `json:"godep"`
 }
 
 var (
@@ -52,12 +53,24 @@ func main() {
 
 	fmt.Printf("Building with %s\n", out.String())
 
-	cmd = exec.Command("godep", "go", "build", "-o", output)
+	command := "go"
+	args := []string{"build", "-o", output}
+
+	if vargs.Godep {
+		args = append([]string{command}, args...)
+		command = "godep"
+	}
+
+	cmd = exec.Command(command, args...)
 	cmd.Env = append(cmd.Env, "PATH=/usr/local/go/bin:$PATH")
 	cmd.Env = append(cmd.Env, "GOPATH=/drone")
 	cmd.Env = append(cmd.Env, "CGO_ENABLED=0")
-	cmd.Env = append(cmd.Env, "GO15VENDOREXPERIMENT=0")
 	cmd.Env = append(cmd.Env, "LDFLAGS='-d -w -s'")
+
+	if vargs.Godep {
+		cmd.Env = append(cmd.Env, "GO15VENDOREXPERIMENT=0")
+	}
+
 	cmd.Dir = path
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
