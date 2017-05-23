@@ -13,6 +13,7 @@ import (
 type Config struct {
 	Package string `json:"package"`
 	Output  string `json:"output"`
+	Binary  string `json:"binary"`
 	Godep   bool   `json:"godep"`
 }
 
@@ -31,7 +32,7 @@ func main() {
 	plugin.MustParse()
 
 	path := filepath.Join(workspace.Path, vargs.Package)
-	output := filepath.Join(workspace.Path, vargs.Output, vargs.Package)
+	output := filepath.Join(workspace.Path, vargs.Output, vargs.Package, vargs.Binary)
 
 	var cmd *exec.Cmd
 	var out bytes.Buffer
@@ -52,7 +53,7 @@ func main() {
 	command := "go"
 	args := []string{"build"}
 
-	if len(vargs.Output) != 0 {
+	if len(vargs.Output) > 0 || len(vargs.Binary) > 0 {
 		args = append(args, []string{"-o", output}...)
 	}
 
