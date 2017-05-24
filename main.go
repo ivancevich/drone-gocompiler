@@ -17,9 +17,7 @@ type Config struct {
 	Godep   bool   `json:"godep"`
 }
 
-var (
-	buildDate string
-)
+var buildDate string
 
 func main() {
 	fmt.Printf("Drone Go Compiler Plugin built at %s\n", buildDate)
