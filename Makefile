@@ -11,7 +11,7 @@ clean:
 	go clean -i ./...
 
 deps:
-	go get -t -u ./...
+	dep ensure
 
 fmt:
 	go fmt $(PACKAGES)
