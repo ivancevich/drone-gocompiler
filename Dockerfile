@@ -2,7 +2,7 @@
 #
 #     docker build --rm=true -t ivancevich/drone-gocompiler .
 
-FROM golang:1.9.0
+FROM golang:1.9.1
 RUN go get github.com/tools/godep
 RUN CGO_ENABLED=0 go install -a std
 
